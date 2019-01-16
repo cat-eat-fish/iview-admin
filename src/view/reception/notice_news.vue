@@ -25,7 +25,6 @@
                                 <DatePicker type="date" placeholder="选择日期" v-model="formValidate.date"></DatePicker>
                             </FormItem>
                         </Col>
-                        <Col span="1" style="text-align: center">-</Col>
                         <Col span="4">
                             <FormItem prop="time">
                                 <TimePicker type="time" placeholder="选择时间" v-model="formValidate.time"></TimePicker>
@@ -36,8 +35,18 @@
                         </Col>
                     </Row>
                 </FormItem>
-                <div ref="formDynamic" :model="formDynamic">
-                    <FormItem :label="'关键词 ' + item.index"  v-for="(item, index) in formDynamic.items" v-if="item.status" :key="index" >
+                <FormItem label="权限">
+                    <Col span="3">
+                        是否置顶 <i-switch v-model="formValidate.ontop"  />
+                    </Col>
+                    <Col span="3">
+                        是否推荐 <i-switch v-model="formValidate.iselite"   />
+                    </Col>
+                </FormItem>
+                <FormItem label="关键字" prop="keyword">
+                    <Input v-model="formValidate.keyword"  placeholder="多个关键字请用','（英文逗号）分隔！"  />
+                </FormItem>
+                    <!-- <FormItem :label="'关键词 ' + item.index"  v-for="(item, index) in formDynamic.items" v-if="item.status" :key="index" >
                         <Row>
                             <Col span="18">
                                 <Input type="text" v-model="item.value" placeholder="请输入关键字" />
@@ -53,8 +62,7 @@
                                 <Button type="dashed" long @click="handleAdd" icon="md-add">添加关键词</Button>
                             </Col>
                         </Row>
-                    </FormItem>
-                </div>
+                    </FormItem> -->
                 <!-- 上传图片 -->
                 <FormItem label="文章缩略图" prop="img">
                     <Upload
@@ -83,7 +91,6 @@
                 
                 <FormItem label="文章内容" prop="content">
                     <editor ref="editor" :value="formValidate.content" v-model="formValidate.content" @on-change="handleChange"/>
-                    <Button @click="changeContent">修改编辑器内容</Button>
                 </FormItem>
                 
                 <FormItem>
@@ -105,19 +112,53 @@
                 <FormItem label="排序" prop="sort">
                     <Input v-model="editformValidate.sort"  placeholder="请输入文章排序"  />
                 </FormItem>
-                <FormItem label="文章标题" prop="name">
-                    <Input v-model="editformValidate.name"  placeholder="请输入您要添加的文章标题"  />
-                </FormItem>
-                <FormItem label="文章类型" prop="type">
-                    <Select v-model="editformValidate.type" >
-                        <Option value="默认类型" >默认类型</Option>
+                <FormItem label="文章类型" prop="pid">
+                    <Select v-model="editformValidate.pid" >
+                        <Option value="1" >公告</Option>
+                        <Option value="2" >新闻</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="文章链接" prop="link">
-                    <Input  v-model="editformValidate.link" placeholder="请输入您要添加的文章链接" />
+                <FormItem label="文章标题" prop="title">
+                    <Input v-model="editformValidate.title"  placeholder="请输入您要添加的文章标题"  />
+                </FormItem>
+                <FormItem label="文章作者" prop="author">
+                    <Input  v-model="editformValidate.author" placeholder="请输入您要添加的文章作者" />
+                </FormItem>
+                <FormItem label="添加时间">
+                    <Row>
+                        <Col span="4">
+                            <FormItem prop="date">
+                                <DatePicker ref="editdate" type="date" placeholder="选择日期" v-model="editformValidate.date"></DatePicker>
+                            </FormItem>
+                        </Col>
+                        <Col span="4">
+                            <FormItem prop="time">
+                                <TimePicker ref="edittime" type="time" placeholder="选择时间" v-model="editformValidate.time"></TimePicker>
+                            </FormItem>
+                        </Col>
+                        <Col span="10">
+                            <!-- <Button type="info" @click="editsetnowtime">使用当前时间</Button> -->
+                        </Col>
+                    </Row>
+                </FormItem>
+                <FormItem label="权限">
+                    <Col span="3">
+                        是否置顶 <i-switch v-model="editformValidate.ontop"  />
+                    </Col>
+                    <Col span="3">
+                        是否推荐 <i-switch v-model="editformValidate.iselite"   />
+                    </Col>
+                </FormItem>
+                <FormItem label="关键字" prop="keyword">
+                    <Input v-model="editformValidate.keyword"  placeholder="多个关键字请用','（英文逗号）分隔！"  />
                 </FormItem>
                 <!-- 上传图片 -->
-                <FormItem label="文章图片" prop="img">
+                <FormItem label="文章缩略图" prop="img">
+                    <!-- <Row>
+                        <Col span="2" >
+                            <img style="width: 120px;" :src="editformValidate.thumb" alt="">
+                        </Col>    
+                    </Row>  -->
                     <div class="demo-upload-list" v-for="(item,index) in uploadList" :key="index">
                         <template v-if="item.status === 'finished'">
                             <img :src="item.url">
@@ -131,7 +172,7 @@
                     </div>
                     <Upload
                         ref="editupload"
-                        name="editinputFile"
+                        name="inputFile"
                         :show-upload-list="false"
                         :on-success="edithandleSuccess"
                         :default-file-list="defaultList"
@@ -142,7 +183,7 @@
                         :before-upload="edithandleUpload"
                         :data="uploaddatas"
                         type="drag"
-                        action="/api/editadvertisement"
+                        action="/api/editnotice_news"
                         style="display: inline-block;width:58px;">
                         <div style="width: 58px;height:58px;line-height: 58px;">
                             <Icon type="ios-camera" size="20"></Icon>
@@ -155,6 +196,12 @@
                         上传图片: {{ file.name }} 
                     </div>
                 </FormItem>
+                <!-- 上传图片 -->
+                
+                <FormItem label="文章内容" prop="content">
+                    <editor ref="editor" :value="editformValidate.content" v-model="editformValidate.content" @on-change="handleChange"/>
+                </FormItem>
+                
                 <FormItem>
                     <Button type="primary" @click="edithandleSubmit('editformValidate')">提交</Button>
                     <Button @click="edithandleReset('editformValidate')" style="margin-left: 8px">重置</Button>
@@ -162,7 +209,7 @@
             </Form>
         </Modal>
         <!-- 文章信息表格 -->
-        <Card>
+        <Card> 
             <p class="search-con search-con-top" style="display:flex;">
                 <Button type="success" @click="addadmin"><Icon type="md-add" />添加文章</Button>&nbsp;
                 <!-- <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>&nbsp; -->
@@ -174,7 +221,7 @@
                 <Button @click="resetSearch" class="search-btn" type="primary"><Icon type="search"/>重置</Button>
                 <Page :total="total" show-sizer style="margin-left:10px;" />
             </p>
-            <Table width="100%" ref="tables"   :loading="loading" border :columns="columns2" :data="data"></Table>
+            <Table width="100%" ref="tables" :stripe=true  :loading="loading" border :columns="columns2" :data="data"></Table>
         </Card>
         <!-- 文件上传 -->
     </div>
@@ -183,7 +230,7 @@
 <script>
 import Tables from '_c/tables'
 import Editor from '_c/editor'
-import addressJson from "@/api/address.json"        
+import addressJson from "@/api/address.json"    
 import CountTo from '_c/count-to'
 export default {
   components: {CountTo,Tables,Editor},
@@ -241,6 +288,7 @@ export default {
             }
         }
     return {
+        switch1: false,
         total:0,                    //总条数
         index: 1,
         formDynamic: {
@@ -264,25 +312,30 @@ export default {
         advertisementType:"",       //文章类型
         loading:true,               // 控制 文章表格信息加载中... 是否打开  
         // 添加文章表单信息
-        formValidate: { pid: '1',sort:"",author:"",status:"1",title:"",content:"",keyword:"",hits:"",ontop:"0",iselite:"0",date:"",time:"",add_time:"",thumb:""},
+        formValidate: { pid: '1',sort:"",author:"",status:"1",title:"",content:"",keyword:"",ontop:"0",iselite:"0",date:"",time:"",add_time:"",thumb:""},
         // 编辑文章表单信息
-        editformValidate: { pid: '',sort:"",author:"",staus:"",title:"",content:"",keyword:"",hits:"",ontop:"",iselite:"",date:"",time:"",add_time:"",thumb:""},
+        editformValidate: { pid: '',sort:"",author:"",staus:"1",title:"",content:"",keyword:"",ontop:"",iselite:"",date:"",time:"",add_time:"",thumb:""},
         // 添加文章表单 - 验证
         ruleValidate: {
             sort:[{ required: true, message: '排序不能为空', trigger: 'blur' },{ validator: validateSort,  trigger: 'change' }],
             pid:[{ required: true, message: '文章类型不能为空', trigger: 'blur' }],
             title:[{ required: true, message: '文章标题不能为空', trigger: 'blur' }],
             author:[{ required: true, message: '文章作者不能为空', trigger: 'blur' }],
-            content:[{ required: true, message: '文章内容不能为空', trigger: 'blur' },{ validator: validateContent,  trigger: 'blur' }],
+            keyword:[{ required: true, message: '文章关键字不能为空', trigger: 'blur' }],
+            content:[{ required: true, message: '文章内容不能为空', trigger: 'change' },{ validator: validateContent,  trigger: 'blur' }],
             date: [{ required: true, type: 'date', message: '请选择日期', trigger: 'blur' }],
             time: [{ required: true, type: 'string', message: '请选择时间', trigger: 'blur' }],
         },
         // 编辑文章表单 - 验证
         editruleValidate: {
-            name:[{ required: true, message: '文章标题不能为空', trigger: 'blur' }],
             sort:[{ required: true, message: '排序不能为空', trigger: 'blur' },{ validator: validateSort,  trigger: 'change' }],
-            type:[{ required: true, message: '文章类型不能为空', trigger: 'blur' }],
-            link:[{ required: true, message: '文章链接不能为空', trigger: 'blur' }],
+            pid:[{ required: true, message: '文章类型不能为空', trigger: 'blur' }],
+            title:[{ required: true, message: '文章标题不能为空', trigger: 'blur' }],
+            author:[{ required: true, message: '文章作者不能为空', trigger: 'blur' }],
+            keyword:[{ required: true, message: '文章关键字不能为空', trigger: 'blur' }],
+            content:[{ required: true, message: '文章内容不能为空', trigger: 'change' },{ validator: validateContent,  trigger: 'blur' }],
+            date: [{ required: true, type: 'date', message: '请选择日期', trigger: 'blur' }],
+            time: [{ required: true, type: 'string', message: '请选择时间', trigger: 'blur' }],
         },
         // 文章信息表格 -- 表头信息
         columns2: [
@@ -305,7 +358,15 @@ export default {
             },
             {title: '文章作者',key: 'author',width: 160,align: 'center',},
             {title: '文章状态',key: 'status',width: 160,align: 'center'},
-            {title: '文章关键字',key: 'keyword',width: 200,align: 'center'},
+            {title: '文章关键字',key: 'keyword',width: 200,align: 'center',
+            render:(h,params)=>{
+                var arr = params.row.keyword.split(',');
+                return h('div', arr.map(function (item,index) {
+                    return h('Tag',{
+                        props: {color:"primary"}   
+                    },item)
+                }))
+            }},
             {title: '文章点击数',key: 'hits',width: 200,align: 'center'},
             {title: '是否置顶',key: 'ontop',width: 200,align: 'center'},
             {title: '是否推荐',key: 'iselite',width: 200,align: 'center'},
@@ -320,17 +381,45 @@ export default {
                             props: {type: 'success',size: 'small'},
                             style: {marginRight: '5px'},
                             on: {click: () => {
-                                this.defaultList[0].url = params.row.img
-                                this.editformValidate = params.row
+                                var arr = params.row.keyword.split(',');
+                                this.defaultList[0].url = params.row.thumb;
+                                this.editformValidate.pid = params.row.pid == "公告" ? '1' : params.row.pid == "新闻" ? '2' : 0;
+                                this.editformValidate.iselite = params.row.iselite == "推荐" ? true : false;
+                                this.editformValidate.ontop = params.row.ontop == "置顶" ? true : false;
+                                this.editformValidate.date = params.row.add_time.substr(0,11)
+                                this.editformValidate.time = params.row.add_time.substr(11,21)
+                                this.editformValidate.id = params.row.id;
+                                this.editformValidate.add_time = params.row.date;
+                                this.editformValidate.status = 1;
+                                this.editformValidate.thumb = params.row.thumb;
+                                this.editformValidate.sort = params.row.sort;
+                                this.editformValidate.title = params.row.title;
+                                this.editformValidate.content = params.row.content;
+                                this.editformValidate.author = params.row.author;
+                                this.editformValidate.keyword = params.row.keyword;
+                                // params.row.keyword = arr;
+                                // if(arr.length > 1){
+                                //         var obj = this.formDynamic.items[0];  
+                                //         var newObj = Object.assign({}, obj);
+                                //         arr.map((item,index)=>{
+                                //             this.formDynamic.items[index] = newObj;
+                                //         })
+                                // }else if(arr.length == 1){
+                                //     arr.map((item,index)=>{
+                                //         this.formDynamic.items[index].index = Number(index+1); 
+                                //         this.formDynamic.items[index].status = Number(index+1); 
+                                //         this.formDynamic.items[index].value = item;
+                                //     })
+                                // }
+                                
                                 this.editmodal = true;
                             }
                             }
                         },"编辑"),
                         h('Poptip', {props: { placement:"top",transfer:true, confirm:true,title:"你确定要删除该项吗？",},
-                        
                             on: {
                                 click: () => {},
-                                "on-ok":()=>{_this.deladvertisement(params.row)},
+                                "on-ok":()=>{_this.delnotice_news(params.row)},
                                 "on-cancel":()=>{console.log(0)}
                             }
                         }, [h("Button",{props:{type: 'error',size: 'small',}},"删除")])
@@ -340,7 +429,7 @@ export default {
         ],
     }
   },
-//   计算属性 
+    // 计算属性 
   computed:{
   },
   mounted(){
@@ -351,11 +440,35 @@ export default {
     this.getAdminInfo();
   },
   methods: {
+    formateDate(datetime,type) {
+        var year = datetime.getFullYear(),
+            month = ("0" + (datetime.getMonth() + 1)).slice(-2),
+            date = ("0" + datetime.getDate()).slice(-2),
+            hour = ("0" + datetime.getHours()).slice(-2),
+            minute = ("0" + datetime.getMinutes()).slice(-2),
+            second = ("0" + datetime.getSeconds()).slice(-2);
+        if(type === "Y-M-D h:min:s"){
+            var result = year + "-"+ month +"-"+ date +" "+ hour +":"+ minute +":" + second;
+        }else if(type === "Y-M-D"){
+            var result = year + "-"+ month +"-"+ date;
+        }if(type === "h:min:s"){
+            var result = hour +":"+ minute +":" + second;
+        }
+        return result;
+    },
     //   使用当前时间
     setnowtime (){
         this.formValidate.date = new Date();
         this.formValidate.time = new Date();
     },
+    // editsetnowtime (){
+    //     this.editformValidate.date = this.formateDate(new Date(),"Y-M-D");
+    //     this.editformValidate.time = this.formateDate(new Date(),"h:min:s");
+    //     console.log(this.$refs.edittime)
+    //     this.$refs.edittime.value = function(){
+    //         return this.edittime;
+    //     }
+    // },
     handleChange (html, text) {
       // console.log(html, text)
     },
@@ -466,17 +579,13 @@ export default {
         })
     },
     // 删除文章信息
-    deladvertisement(e){{
+    delnotice_news(e){{
         var _this = this;
-        this.$axios({method: 'post',data:{id:e.id}, url: '/api/deladvertisement'})
+        this.$axios({method: 'post',data:{id:e.id}, url: '/api/delnotice_news'})
         .then(function(res){
             var data = res.data;
-            console.log(data)
             _this.getAdminInfo();
             _this.$Message.warning(data.message);
-            // that.handleReset("formValidate");
-            // that.getAdminInfo()
-            // that.addmodal = false;
         }).catch(function(error){
             console.log(error)
         })        
@@ -506,12 +615,20 @@ export default {
     },
     // 添加 表单验证
     handleSubmit (name) {
-        var addform = this.formValidate;
-        // console.log(this.formDynamic)
         this.$refs[name].validate((valid) => {
             if (valid) {
+                // if(this.formDynamic.items[0].value == ""){
+                //     this.$Message.error('至少输入一个关键词!');
+                //     return false;
+                // }
+                // var arr = [];
+                // this.formDynamic.items.map((item,val)=>{
+                //     arr.push(item.value);
+                // })
+                // this.formValidate.keyword = arr.join(',');
                 if(this.file == null){{
                     this.$Message.error('文章图片不能为空!');
+                    return false;
                 }}
                 this.uploaddatas.sort = this.formValidate.sort;
                 this.uploaddatas.pid = this.formValidate.pid;
@@ -520,10 +637,9 @@ export default {
                 this.uploaddatas.title = this.formValidate.title;
                 this.uploaddatas.keyword = this.formValidate.keyword;
                 this.uploaddatas.content = this.formValidate.content;
-                this.uploaddatas.ontop = this.formValidate.ontop;
-                this.uploaddatas.iselite = this.formValidate.iselite;
-                this.uploaddatas.add_time = this.formValidate.add_time;
-                this.uploaddatas.thumb = this.formValidate.thumb;
+                this.uploaddatas.ontop = Number(this.formValidate.ontop);
+                this.uploaddatas.iselite = Number(this.formValidate.iselite);
+                this.uploaddatas.add_time = this.formateDate(new Date(this.formValidate.date),"Y-M-D h:min:s");
                 // 传数据
                 this.upload();
             } else {
@@ -534,6 +650,8 @@ export default {
     // 重置 添加表单
     handleReset (name) {
         this.$refs[name].resetFields();
+        this.formValidate.ontop = false;
+        this.formValidate.iselite = false;
         this.formDynamic= {items: [{value: '',index: 1,status: 1}]}
     },
     // 编辑 model 确定事件
@@ -550,12 +668,20 @@ export default {
             if (valid) {
                 if(this.file == null){{
                     this.$Message.error('文章图片不能为空!');
+                    return false;
                 }}
-                this.uploaddatas.id = this.editformValidate.id;
-                this.uploaddatas.name = this.editformValidate.name;
+                this.uploaddatas.id = this.editformValidate.id
                 this.uploaddatas.sort = this.editformValidate.sort;
-                this.uploaddatas.type = this.editformValidate.type;
-                this.uploaddatas.link = this.editformValidate.link;
+                this.uploaddatas.pid = this.editformValidate.pid;
+                this.uploaddatas.author = this.editformValidate.author;
+                this.uploaddatas.status = this.editformValidate.status;
+                this.uploaddatas.title = this.editformValidate.title;
+                this.uploaddatas.keyword = this.editformValidate.keyword;
+                this.uploaddatas.content = this.editformValidate.content;
+                this.uploaddatas.ontop = Number(this.editformValidate.ontop);
+                this.uploaddatas.iselite = Number(this.editformValidate.iselite);
+                this.uploaddatas.add_time = this.formateDate(new Date(this.editformValidate.date),"Y-M-D")+" "+this.editformValidate.time;
+                // this.uploaddatas.thumb = this.editformValidate.thumb;
                 // 传数据
                 this.editupload();
             } else {
@@ -564,8 +690,17 @@ export default {
         })
     },
     // 重置 编辑文章表单
-    edithandleReset (name) {this.$refs[name].resetFields();},
-  }
+    edithandleReset (name) {
+        this.$refs[name].resetFields();
+        this.editformValidate.ontop = false;
+        this.editformValidate.iselite = false;
+        this.formDynamic= {items: [{value: '',index: 1,status: 1}]}
+    },
+  },
+//   beforeDestroy(){
+//       console.log(`--${this.compName}--beforeDestroy`)
+//       return false;
+//   }
 }
 </script>
 
