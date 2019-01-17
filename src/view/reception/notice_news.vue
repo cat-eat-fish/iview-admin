@@ -208,6 +208,21 @@
                 </FormItem>
             </Form>
         </Modal>
+        <!-- 预览文章 -->
+        <Modal v-model="showmodal" title="文章预览"  :footer-hide=true  :fullscreen=true >
+            <div class="showmadal">
+                <h2>{{this.showmodaldata.title}}</h2>  
+                <div class="showmadal-info">
+                    <span>
+                        <Tag color="success" v-for="(item,index) in this.showmodaldata.keywords" :key="index" >{{item}}</Tag>    
+                    </span>  
+                </div>
+                <div class="showmadal-info">{{this.showmodaldata.add_time}}</div>
+                <div class="showmadal-content" v-html="this.showmodaldata.content">
+
+                </div>
+            </div>
+        </Modal>
         <!-- 文章信息表格 -->
         <Card> 
             <p class="search-con search-con-top" style="display:flex;">
@@ -304,6 +319,7 @@ export default {
         visible: false,  
         searchKey: '',
         searchValue: '',            //搜索关键字
+        showmodal:false,
         data: [],                   //文章信息表格 数据
         total:0,                    //文章总条数
         addmodal: false,            // 控制 添加文章 model 是否代开 
@@ -311,6 +327,8 @@ export default {
         uploaddatas:{},
         advertisementType:"",       //文章类型
         loading:true,               // 控制 文章表格信息加载中... 是否打开  
+
+        showmodaldata:{},
         // 添加文章表单信息
         formValidate: { pid: '1',sort:"",author:"",status:"1",title:"",content:"",keyword:"",ontop:"0",iselite:"0",date:"",time:"",add_time:"",thumb:""},
         // 编辑文章表单信息
@@ -377,6 +395,14 @@ export default {
                 render: (h, params) => {
                     var _this = this;
                     return h('div', [
+                        h('Button', {props: {type: 'success',size: 'small'},style: {marginRight: '5px'},
+                            on: {click:()=>{
+                                    this.showmodal = true;
+                                    this.showmodaldata = params.row;
+                                    this.showmodaldata.keywords = params.row.keyword.split(',');
+                                }
+                            }
+                        }, "预览"),
                         h('Button', {
                             props: {type: 'success',size: 'small'},
                             style: {marginRight: '5px'},
@@ -397,21 +423,6 @@ export default {
                                 this.editformValidate.content = params.row.content;
                                 this.editformValidate.author = params.row.author;
                                 this.editformValidate.keyword = params.row.keyword;
-                                // params.row.keyword = arr;
-                                // if(arr.length > 1){
-                                //         var obj = this.formDynamic.items[0];  
-                                //         var newObj = Object.assign({}, obj);
-                                //         arr.map((item,index)=>{
-                                //             this.formDynamic.items[index] = newObj;
-                                //         })
-                                // }else if(arr.length == 1){
-                                //     arr.map((item,index)=>{
-                                //         this.formDynamic.items[index].index = Number(index+1); 
-                                //         this.formDynamic.items[index].status = Number(index+1); 
-                                //         this.formDynamic.items[index].value = item;
-                                //     })
-                                // }
-                                
                                 this.editmodal = true;
                             }
                             }
@@ -710,6 +721,10 @@ export default {
     .demo-upload-list-cover{display: none;position: absolute;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,.6);}
     .demo-upload-list:hover .demo-upload-list-cover{display: block;}
     .demo-upload-list-cover i{color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;}
+
+    .showmadal{width:800px;position: relative;margin: 0 auto;text-align: center;}
+    .showmadal-title{}
+    .showmadal-content{text-align: initial;}
 </style>
 
 

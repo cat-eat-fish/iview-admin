@@ -480,6 +480,9 @@ export default {
     .demo-upload-list-cover{display: none;position: absolute;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,.6);}
     .demo-upload-list:hover .demo-upload-list-cover{display: block;}
     .demo-upload-list-cover i{color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;}
+
+
+    .carousel{height:500px;}
 </style>
 
 
