@@ -42,36 +42,32 @@ export default [
     meta: {hideInBread: true},
     children: [
       {path: 'admin_page',name: 'admin_page',
-        meta: {icon: 'md-funnel',title: '管理员管理'},
+        meta: {icon: 'ios-person',title: '管理员管理'},
         component: () => import('@/view/admin/admin.vue')
       },
     ]
   },
   {path: '/reception',name: 'reception',
-    meta: {icon: 'logo-buffer',title: '前台管理'},
+    meta: {icon: 'md-desktop',title: '前台管理'},
     component: Main,
     children: [
       {path: 'notice_news',name: 'notice_news',
-        meta: {icon: 'md-trending-up',title: '公告_新闻管理'},
+        meta: {icon: 'md-megaphone',title: '公告_新闻管理'},
         component: () => import('@/view/reception/notice_news.vue'),
         
       },
       {path: 'advertisement',name: 'advertisement',
-        meta: {icon: 'md-trending-up',title: '广告管理'},
+        meta: {icon: 'ios-image',title: '广告管理'},
         component: () => import('@/view/reception/advertisement.vue')
       },
     ]
   },
   {path: '/database',name: 'database',
-    meta: {icon: 'logo-buffer',title: '数据库管理'},
+    meta: {icon: 'ios-folder-open',title: '数据库管理'},
     component: Main,
     children: [
-      {path: 'administrator_picture',name: 'administrator_picture',
-        meta: {icon: 'md-trending-up',title: '管理员废用头像管理'},
-        component: () => import('@/view/database/administrator_picture.vue')
-      },
       {path: 'ad_pictures',name: 'ad_pictures',
-        meta: {icon: 'md-trending-up',title: '广告废用图片管理'},
+        meta: {icon: 'md-photos',title: '废用图片管理'},
         component: () => import('@/view/database/ad_pictures.vue')
       },
     ]
@@ -103,24 +99,6 @@ export default [
           title: '分割窗口'
         },
         component: () => import('@/view/components/split-pane/split-pane.vue')
-      },
-      {
-        path: 'markdown_page',
-        name: 'markdown_page',
-        meta: {
-          icon: 'logo-markdown',
-          title: 'Markdown编辑器'
-        },
-        component: () => import('@/view/components/markdown/markdown.vue')
-      },
-      {
-        path: 'editor_page',
-        name: 'editor_page',
-        meta: {
-          icon: 'ios-create',
-          title: '富文本编辑器'
-        },
-        component: () => import('@/view/components/editor/editor.vue')
       },
       {
         path: 'icons_page',
@@ -208,44 +186,6 @@ export default [
           beforeCloseName: 'before_close_normal'
         },
         component: () => import('@/view/tools-methods/tools-methods.vue')
-      }
-    ]
-  },
-  {
-    path: '/i18n',
-    name: 'i18n',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'i18n_page',
-        name: 'i18n_page',
-        meta: {
-          icon: 'md-planet',
-          title: 'i18n - {{ i18n_page }}'
-        },
-        component: () => import('@/view/i18n/i18n-page.vue')
-      }
-    ]
-  },
-  {
-    path: '/error_store',
-    name: 'error_store',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'error_store_page',
-        name: 'error_store_page',
-        meta: {
-          icon: 'ios-bug',
-          title: '错误收集'
-        },
-        component: () => import('@/view/error-store/error-store.vue')
       }
     ]
   },

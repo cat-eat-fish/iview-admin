@@ -6,7 +6,7 @@ export default {
   reception: "前台管理",
   database:"数据库管理",
   administrator_picture:"管理员废用头像管理",
-  ad_pictures:"广告图片管理",
+  ad_pictures:"数据库废用图片管理",
   notice_news:"公告_新闻管理",
   advertisement:"广告管理",
   tables_page: '多功能表格',

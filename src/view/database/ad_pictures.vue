@@ -29,15 +29,32 @@
                 <Panel name="3">
                     管理员图片管理
                     <div slot="content">
-                        <Button @click="delimg" type="error">删除废用图片</Button>
+                        <Button @click="deladmin" type="error">删除废用图片</Button>
                         <div style="display:flex;justify-content: space-around;">
                             <ul>
-                                <p>所有图片({{notice_news_allimg.length}})</p>
+                                <p>所有图片({{admin_allimg.length}})</p>
                                 <li v-for="(item,index) in admin_allimg" :key="index">{{item}}</li>
                             </ul>
                             <ul>
-                                <p>正在使用({{notice_news_nowuseimg.length}})</p>
+                                <p>正在使用({{admin_nowuseimg.length}})</p>
                                 <li v-for="(item,index) in admin_nowuseimg" :key="index">{{item}}</li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </Panel>
+                <Panel name="4">
+                    广告图片管理
+                    <div slot="content">
+                        <Button @click="deladvertisement" type="error">删除废用图片</Button>
+                        <div style="display:flex;justify-content: space-around;">
+                            <ul>
+                                <p>所有图片({{advertisement_allimg.length}})</p>
+                                <li v-for="(item,index) in advertisement_allimg" :key="index">{{item}}</li>
+                            </ul>
+                            <ul>
+                                <p>正在使用({{advertisement_nowuseimg.length}})</p>
+                                <li v-for="(item,index) in advertisement_nowuseimg" :key="index">{{item}}</li>
                             </ul>
                         </div>
                         
@@ -55,12 +72,19 @@ export default {
             value1 : "",
             notice_news_allimg:[],
             notice_news_nowuseimg:[],
+
             admin_allimg:[],
             admin_nowuseimg:[],
+
+            advertisement_allimg:[],
+            advertisement_nowuseimg:[],
+
         }
     },
     created(){
         this.getAdminInfo();
+        this.getadminimg();
+        this.getadvertisement();
     },
     methods:{
         //   获取管理员信息
@@ -79,6 +103,7 @@ export default {
         reset(){
             this.getAdminInfo();
             this.getadminimg();
+            this.getadvertisement();
             this.$Message.success('重置成功');
         },
         delimg(){
@@ -97,11 +122,49 @@ export default {
 
         getadminimg(){
             var _this = this;
-            this.$axios({method: 'post',url: '/api/database/adminimg'})
+            this.$axios({method: 'post',url: '/api/database/admin'})
             .then(function(res){
                 var data = res.data;
                 _this.admin_allimg = data.data.allimg;
                 _this.admin_nowuseimg = data.data.nowuseimg;
+            }).catch(function(error){
+                console.log(error)
+            })
+        },
+        deladmin(){
+            var _this = this;
+            this.$axios({method: 'post',url: '/api/database/deladmin'})
+            .then(function(res){
+                var data = res.data;
+                if(data.status === 200){
+                    _this.$Message.success(data.message);
+                }
+                _this.getadminimg();
+            }).catch(function(error){
+                console.log(error)
+            })
+        },
+
+        getadvertisement(){
+            var _this = this;
+            this.$axios({method: 'post',url: '/api/database/advertisement'})
+            .then(function(res){
+                var data = res.data;
+                _this.advertisement_allimg = data.data.allimg;
+                _this.advertisement_nowuseimg = data.data.nowuseimg;
+            }).catch(function(error){
+                console.log(error)
+            })
+        },
+        deladvertisement(){
+            var _this = this;
+            this.$axios({method: 'post',url: '/api/database/deladvertisement'})
+            .then(function(res){
+                var data = res.data;
+                if(data.status === 200){
+                    _this.$Message.success(data.message);
+                }
+                _this.getadvertisement();
             }).catch(function(error){
                 console.log(error)
             })
