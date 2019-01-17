@@ -1,6 +1,7 @@
 <template>
     <div>
         <Card>
+            <Button @click="reset" type="primary">重新获取数据</Button>
             <Collapse v-model="value1">
                 <Panel name="1">
                     清理上传空文件夹 
@@ -11,7 +12,6 @@
                 <Panel name="2">
                     文章图片管理
                     <div slot="content">
-                        <Button @click="reset" type="primary">重新获取数据</Button>
                         <Button @click="delimg" type="error">删除废用图片</Button>
                         <div style="display:flex;justify-content: space-around;">
                             <ul>
@@ -26,19 +26,18 @@
                         
                     </div>
                 </Panel>
-                <Panel name="2">
+                <Panel name="3">
                     管理员图片管理
                     <div slot="content">
-                        <Button @click="resetadminimg" type="primary">重新获取数据</Button>
                         <Button @click="delimg" type="error">删除废用图片</Button>
                         <div style="display:flex;justify-content: space-around;">
                             <ul>
                                 <p>所有图片({{notice_news_allimg.length}})</p>
-                                <li v-for="(item,index) in notice_news_allimg" :key="index">{{item}}</li>
+                                <li v-for="(item,index) in admin_allimg" :key="index">{{item}}</li>
                             </ul>
                             <ul>
                                 <p>正在使用({{notice_news_nowuseimg.length}})</p>
-                                <li v-for="(item,index) in notice_news_nowuseimg" :key="index">{{item}}</li>
+                                <li v-for="(item,index) in admin_nowuseimg" :key="index">{{item}}</li>
                             </ul>
                         </div>
                         
@@ -79,6 +78,7 @@ export default {
         // 重新获取文章数据
         reset(){
             this.getAdminInfo();
+            this.getadminimg();
             this.$Message.success('重置成功');
         },
         delimg(){
@@ -106,10 +106,7 @@ export default {
                 console.log(error)
             })
         },
-        //重新获取管理员图片
-        resetadminimg(){
-
-        },
+       
 
 
         // 清理空文件夹
