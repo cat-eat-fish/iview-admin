@@ -210,6 +210,13 @@
         </Modal>
         <!-- 预览文章 -->
         <Modal v-model="showmodal" title="文章预览"  :footer-hide=true  :fullscreen=true >
+            <p>当前正在进行第 {{ current + 1 }} 步</p>
+            <Steps :current="current">
+                <Step title="编写写文章"></Step>
+                <Step title="审核"></Step>
+                <Step title="发布"></Step>
+            </Steps>
+            <Button type="primary" @click="next">Next step</Button>
             <div class="showmadal">
                 <h2>{{this.showmodaldata.title}}</h2>  
                 <div class="showmadal-info">
@@ -312,6 +319,7 @@ export default {
         defaultList: [
             {'url':""},
         ],
+        current: 0,
         uploadList: [],
         file: null,
         loadingStatus: false,
@@ -451,6 +459,13 @@ export default {
     this.getAdminInfo();
   },
   methods: {
+      next () {
+                if (this.current == 2) {
+                    this.current = 0;
+                } else {
+                    this.current += 1;
+                }
+            },
     formateDate(datetime,type) {
         var year = datetime.getFullYear(),
             month = ("0" + (datetime.getMonth() + 1)).slice(-2),
