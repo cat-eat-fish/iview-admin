@@ -399,6 +399,12 @@ export const setTitle = (routeItem, vm) => {
 }
 
 
+    // 判断数据类型
+export const getType = (obj) => {
+  var type = typeof obj;
+  if (type !== 'object') {return type;}
+  return Object.prototype.toString.call(obj).replace(/^[object (S+)]$/, '$1');
+}
 
  // 时间格式化
 // export const  formateDate = (datetime,type) =>{

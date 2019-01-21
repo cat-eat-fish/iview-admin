@@ -100,14 +100,7 @@
             </Form>
         </Modal>
         <!-- 编辑 -->
-        <Modal
-            v-model="editmodal"
-            :fullscreen=true
-            title="编辑文章"
-            :footer-hide=true
-            :mask-closable=false
-            @on-ok="editok"
-            @on-cancel="editcancel">
+        <Modal v-model="editmodal" :fullscreen=true title="编辑文章" :footer-hide=true :mask-closable=false @on-ok="editok" @on-cancel="editcancel">
             <Form ref="editformValidate" :model="editformValidate" :rules="editruleValidate" :label-width="80">
                 <FormItem label="排序" prop="sort">
                     <Input v-model="editformValidate.sort"  placeholder="请输入文章排序"  />
@@ -208,16 +201,10 @@
                 </FormItem>
             </Form>
         </Modal>
-        <!-- 预览文章 -->
-        <Modal v-model="showmodal" title="文章预览"  :footer-hide=true  :fullscreen=true >
-            <p>当前正在进行第 {{ current + 1 }} 步</p>
-            <Steps :current="current">
-                <Step title="编写写文章"></Step>
-                <Step title="审核"></Step>
-                <Step title="发布"></Step>
-            </Steps>
-            <Button type="primary" @click="next">Next step</Button>
+        <!-- 预览/发布文章 -->
+        <Modal v-model="showmodal" title="文章预览-审核"  :footer-hide=true  :fullscreen=true >
             <div class="showmadal">
+                <Button @click="gorelease" v-if="showmodaldata.status !== '已发布' ">点击发布</Button>
                 <h2>{{this.showmodaldata.title}}</h2>  
                 <div class="showmadal-info">
                     <span>
@@ -225,9 +212,7 @@
                     </span>  
                 </div>
                 <div class="showmadal-info">{{this.showmodaldata.add_time}}</div>
-                <div class="showmadal-content" v-html="this.showmodaldata.content">
-
-                </div>
+                <div class="showmadal-content" v-html="this.showmodaldata.content"></div>
             </div>
         </Modal>
         <!-- 文章信息表格 -->
@@ -245,17 +230,13 @@
             </p>
             <Table width="100%" ref="tables" :stripe=true  :loading="loading" border :columns="columns2" :data="data"></Table>
         </Card>
-        <!-- 文件上传 -->
     </div>
 </template>
 
 <script>
-import Tables from '_c/tables'
 import Editor from '_c/editor'
-import addressJson from "@/api/address.json"    
-import CountTo from '_c/count-to'
 export default {
-  components: {CountTo,Tables,Editor},
+  components: {Editor},
   name: 'notice_news',
   data () {
         const validateCard = (rule, value, callback) => {
@@ -313,13 +294,9 @@ export default {
         switch1: false,
         total:0,                    //总条数
         index: 1,
-        formDynamic: {
-            items: [{value: '',index: 1,status: 1}]
-        },
-        defaultList: [
-            {'url':""},
-        ],
-        current: 0,
+        formDynamic: { items: [{value: '',index: 1,status: 1}]},
+        defaultList: [{'url':""},],
+        current: 1,
         uploadList: [],
         file: null,
         loadingStatus: false,
@@ -335,7 +312,6 @@ export default {
         uploaddatas:{},
         advertisementType:"",       //文章类型
         loading:true,               // 控制 文章表格信息加载中... 是否打开  
-
         showmodaldata:{},
         // 添加文章表单信息
         formValidate: { pid: '1',sort:"",author:"",status:"1",title:"",content:"",keyword:"",ontop:"0",iselite:"0",date:"",time:"",add_time:"",thumb:""},
@@ -366,8 +342,8 @@ export default {
         // 文章信息表格 -- 表头信息
         columns2: [
             {title: 'ID',key: 'id',width: 80,align: 'center',fixed: 'left',sortable: true},
-            {title: '所属栏目',key: 'pid',width: 160,align: 'center'},
-            {title: '排序',key: 'sort',width: 160,align: 'center',sortable: true},
+            {title: '所属栏目',key: 'pid',width: 100,align: 'center'},
+            {title: '排序',key: 'sort',width: 80,align: 'center',sortable: true},
             {title: '文章标题',key: 'title',width: 160,align: 'center',},
             {title: '文章缩略图',key: "thumb",width: 500,align: 'center',     
                 render: (h,params) => {
@@ -383,21 +359,20 @@ export default {
                 }
             },
             {title: '文章作者',key: 'author',width: 160,align: 'center',},
-            {title: '文章状态',key: 'status',width: 160,align: 'center'},
+            {title: '文章状态',key: 'status',width: 100,align: 'center'},
             {title: '文章关键字',key: 'keyword',width: 200,align: 'center',
-            render:(h,params)=>{
-                var arr = params.row.keyword.split(',');
-                return h('div', arr.map(function (item,index) {
-                    return h('Tag',{
-                        props: {color:"primary"}   
-                    },item)
-                }))
-            }},
-            {title: '文章点击数',key: 'hits',width: 200,align: 'center'},
-            {title: '是否置顶',key: 'ontop',width: 200,align: 'center'},
-            {title: '是否推荐',key: 'iselite',width: 200,align: 'center'},
-            // {title: '',key: "",width: 300,align: 'center',render: (h,params) => {return h('a', {attrs: {href: params.row.link,target:"_blank"},},params.row.link)}},
-            
+                render:(h,params)=>{
+                    var arr = params.row.keyword.split(',');
+                    return h('div', arr.map(function (item,index) {
+                        return h('Tag',{
+                            props: {color:"primary"}   
+                        },item)
+                    }))
+                }
+            },
+            {title: '文章点击数',key: 'hits',width: 100,align: 'center'},
+            {title: '是否置顶',key: 'ontop',width: 100,align: 'center'},
+            {title: '是否推荐',key: 'iselite',width: 100,align: 'center'},
             {title: '添加时间',key: 'add_time',width: 180,align: 'center',sortable: true},
             {title: '操作',key: 'action',width: 200,options: ['delete'],fixed: 'right',align: 'center',
                 render: (h, params) => {
@@ -406,11 +381,13 @@ export default {
                         h('Button', {props: {type: 'success',size: 'small'},style: {marginRight: '5px'},
                             on: {click:()=>{
                                     this.showmodal = true;
+                                    this.current = 2;
                                     this.showmodaldata = params.row;
                                     this.showmodaldata.keywords = params.row.keyword.split(',');
+                                    this.showmodaldata.id = params.row.id;
                                 }
                             }
-                        }, "预览"),
+                        }, params.row.status === "草稿" ? "预览/发布" : "预览"),
                         h('Button', {
                             props: {type: 'success',size: 'small'},
                             style: {marginRight: '5px'},
@@ -431,6 +408,7 @@ export default {
                                 this.editformValidate.content = params.row.content;
                                 this.editformValidate.author = params.row.author;
                                 this.editformValidate.keyword = params.row.keyword;
+                                this.$refs.editor.setHtml(this.editformValidate.content)
                                 this.editmodal = true;
                             }
                             }
@@ -448,9 +426,6 @@ export default {
         ],
     }
   },
-    // 计算属性 
-  computed:{
-  },
   mounted(){
       this.setDefaultSearchKey();
       this.uploadList = this.$refs.editupload.fileList;
@@ -459,13 +434,26 @@ export default {
     this.getAdminInfo();
   },
   methods: {
-      next () {
-                if (this.current == 2) {
-                    this.current = 0;
-                } else {
-                    this.current += 1;
-                }
-            },
+    gorelease(){
+        var _this = this;
+        var id = this.showmodaldata.id;
+        this.$axios({method: 'post',url: '/api/notice_news/release',data:{id:id}})
+        .then(function(res){
+            var data = res.data;
+            _this.$Message.success(data.message);
+            _this.getAdminInfo();
+            _this.showmodal = false;
+        }).catch(function(error){
+            console.log(error)
+        })
+    },
+    next () {
+        if (this.current == 3) {
+            this.current = 0;
+        } else {
+            this.current += 1;
+        }
+    },
     formateDate(datetime,type) {
         var year = datetime.getFullYear(),
             month = ("0" + (datetime.getMonth() + 1)).slice(-2),
@@ -487,14 +475,6 @@ export default {
         this.formValidate.date = new Date();
         this.formValidate.time = new Date();
     },
-    // editsetnowtime (){
-    //     this.editformValidate.date = this.formateDate(new Date(),"Y-M-D");
-    //     this.editformValidate.time = this.formateDate(new Date(),"h:min:s");
-    //     console.log(this.$refs.edittime)
-    //     this.$refs.edittime.value = function(){
-    //         return this.edittime;
-    //     }
-    // },
     handleChange (html, text) {
       // console.log(html, text)
     },
@@ -512,10 +492,6 @@ export default {
     handleRemove (index) {
         this.formDynamic.items[index].status = 0;
     },
-    // 设置 上传文件 携带数据
-    // setuploaddatas (e) {
-    //     this.uploaddatas.id = e;
-    // },
     handleView (e) {
         this.imgName = e.url;
         this.visible = true;
@@ -569,8 +545,6 @@ export default {
         this.loadingStatus = false;
         
     },
-
-
     // 重置搜索内容
     resetSearch(){
         this.getAdminInfo();
@@ -616,14 +590,6 @@ export default {
             console.log(error)
         })        
     }},
-    // 判断数据类型
-    getType(obj) {
-        var type = typeof obj;
-        if (type !== 'object') {
-            return type;
-        }
-        return Object.prototype.toString.call(obj).replace(/^[object (S+)]$/, '$1');
-    },
     addadmin (){
         this.$Message.info({content:"欢迎添加文章，误操作会影响你的正常工作，且不会保存数据，请正常操作！",duration:2.5});
         this.addmodal = true;
@@ -643,15 +609,6 @@ export default {
     handleSubmit (name) {
         this.$refs[name].validate((valid) => {
             if (valid) {
-                // if(this.formDynamic.items[0].value == ""){
-                //     this.$Message.error('至少输入一个关键词!');
-                //     return false;
-                // }
-                // var arr = [];
-                // this.formDynamic.items.map((item,val)=>{
-                //     arr.push(item.value);
-                // })
-                // this.formValidate.keyword = arr.join(',');
                 if(this.file == null){{
                     this.$Message.error('文章图片不能为空!');
                     return false;
@@ -730,13 +687,20 @@ export default {
 }
 </script>
 
-<style>
+
+<style lang="less" >
+    .search-con{
+        .search{
+            &-col{display: inline-block; width: 200px;}
+            &-input{display: inline-block;width: 200px;margin-left: 2px;}
+            &-btn{margin-left: 2px;}
+        }
+    }
     .demo-upload-list{display: inline-block;width: 60px;height: 60px;text-align: center;line-height: 60px;border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;position: relative;box-shadow: 0 1px 1px rgba(0,0,0,.2);margin-right: 4px;}
     .demo-upload-list img{width: 100%;height: 100%;}
     .demo-upload-list-cover{display: none;position: absolute;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,.6);}
     .demo-upload-list:hover .demo-upload-list-cover{display: block;}
     .demo-upload-list-cover i{color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;}
-
     .showmadal{width:800px;position: relative;margin: 0 auto;text-align: center;}
     .showmadal-title{}
     .showmadal-content{text-align: initial;}

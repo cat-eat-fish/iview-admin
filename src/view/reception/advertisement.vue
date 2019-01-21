@@ -1,13 +1,7 @@
 <template>
     <div>
         <!-- 添加 -->
-        <Modal
-            v-model="addmodal"
-            title="添加新广告"
-            :footer-hide=true
-            :mask-closable=false
-            @on-ok="ok"
-            @on-cancel="cancel">
+        <Modal v-model="addmodal" title="添加新广告" :footer-hide=true :mask-closable=false @on-ok="ok" @on-cancel="cancel">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                 <FormItem label="排序" prop="sort">
                     <Input v-model="formValidate.sort"  placeholder="请输入广告排序"  />
@@ -55,13 +49,7 @@
             </Form>
         </Modal>
         <!-- 编辑 -->
-        <Modal
-            v-model="editmodal"
-            title="编辑广告"
-            :footer-hide=true
-            :mask-closable=false
-            @on-ok="editok"
-            @on-cancel="editcancel">
+        <Modal v-model="editmodal" title="编辑广告" :footer-hide=true :mask-closable=false @on-ok="editok" @on-cancel="editcancel">
             <Form ref="editformValidate" :model="editformValidate" :rules="editruleValidate" :label-width="80">
                 <FormItem label="排序" prop="sort">
                     <Input v-model="editformValidate.sort"  placeholder="请输入广告排序"  />
@@ -141,11 +129,7 @@
 </template>
 
 <script>
-import Tables from '_c/tables'
-import addressJson from "@/api/address.json"        
-import CountTo from '_c/count-to'
 export default {
-  components: {CountTo,Tables},
   name: 'advertisement',
   data () {
         const validateCard = (rule, value, callback) => {
@@ -193,13 +177,9 @@ export default {
             }
         }
     return {
-        defaultList: [
-            {'url':""},
-            // {'name': 'a42bdcc1178e62b4694c830f028db5c0','url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'},
-            // {'name': 'bc7521e033abdd1e92222d733590f104','url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'}
-        ],
+        defaultList: [{'url':""},],     //默认已上传的文件列表
         uploadList: [],
-        file: null,
+        file: null,                  //上传文件
         loadingStatus: false,
         imgName: '',
         visible: false,  
@@ -222,7 +202,6 @@ export default {
             sort:[{ required: true, message: '排序不能为空', trigger: 'blur' },{ validator: validateSort,  trigger: 'change' }],
             type:[{ required: true, message: '广告类型不能为空', trigger: 'blur' }],
             link:[{ required: true, message: '广告链接不能为空', trigger: 'blur' }],
-            // img:[{ required: true, message: '广告图片不能为空', trigger: 'blur' }],
         },
         // 编辑广告表单 - 验证
         editruleValidate: {
@@ -234,9 +213,9 @@ export default {
         // 广告信息表格 -- 表头信息
         columns2: [
             {title: 'ID',key: 'id',width: 80,align: 'center',fixed: 'left',sortable: true},
-            {title: '排序',key: 'sort',width: 160,align: 'center',sortable: true},
+            {title: '排序',key: 'sort',width: 80,align: 'center',sortable: true},
             {title: '广告标题',key: 'name',width: 160,align: 'center'},
-            {title: '广告类型',key: 'type',width: 200,align: 'center'},
+            {title: '广告类型',key: 'type',width: 100,align: 'center'},
             {title: '广告链接',key: "link",width: 300,align: 'center',render: (h,params) => {return h('a', {attrs: {href: params.row.link,target:"_blank"},},params.row.link)}},
             {title: '广告图片',key: "img",width: 500,align: 'center',     
                 render: (h,params) => {
@@ -280,22 +259,14 @@ export default {
         ],
     }
   },
-//   计算属性 
-  computed:{
-      
-  },
   mounted(){
-      this.setDefaultSearchKey();
-      this.uploadList = this.$refs.editupload.fileList;
+    this.setDefaultSearchKey();
+    this.uploadList = this.$refs.editupload.fileList;
   },
   created(){
     this.getAdminInfo();
   },
   methods: {
-    // 设置 上传文件 携带数据
-    // setuploaddatas (e) {
-    //     this.uploaddatas.id = e;
-    // },
     handleView (e) {
         this.imgName = e.url;
         this.visible = true;
@@ -349,8 +320,6 @@ export default {
         this.loadingStatus = false;
         
     },
-
-
     // 重置搜索内容
     resetSearch(){
         this.getAdminInfo();
@@ -390,24 +359,12 @@ export default {
         this.$axios({method: 'post',data:{id:e.id}, url: '/api/deladvertisement'})
         .then(function(res){
             var data = res.data;
-            console.log(data)
             _this.getAdminInfo();
             _this.$Message.warning(data.message);
-            // that.handleReset("formValidate");
-            // that.getAdminInfo()
-            // that.addmodal = false;
         }).catch(function(error){
             console.log(error)
         })        
     }},
-    // 判断数据类型
-    getType(obj) {
-        var type = typeof obj;
-        if (type !== 'object') {
-            return type;
-        }
-        return Object.prototype.toString.call(obj).replace(/^[object (S+)]$/, '$1');
-    },
     addadmin (){
         this.$Message.info({content:"欢迎添加广告，误操作会影响你的正常工作，且不会保存数据，请正常操作！",duration:2.5});
         this.addmodal = true;
@@ -474,15 +431,17 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" >
+    .search-con{
+        .search{
+            &-col{display: inline-block; width: 200px;}
+            &-input{display: inline-block;width: 200px;margin-left: 2px;}
+            &-btn{margin-left: 2px;}
+        }
+    }
     .demo-upload-list{display: inline-block;width: 60px;height: 60px;text-align: center;line-height: 60px;border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;position: relative;box-shadow: 0 1px 1px rgba(0,0,0,.2);margin-right: 4px;}
     .demo-upload-list img{width: 100%;height: 100%;}
     .demo-upload-list-cover{display: none;position: absolute;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,.6);}
     .demo-upload-list:hover .demo-upload-list-cover{display: block;}
     .demo-upload-list-cover i{color: #fff;font-size: 20px;cursor: pointer;margin: 0 2px;}
-
-
-    .carousel{height:500px;}
 </style>
-
-

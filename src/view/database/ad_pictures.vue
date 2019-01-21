@@ -72,13 +72,10 @@ export default {
             value1 : "",
             notice_news_allimg:[],
             notice_news_nowuseimg:[],
-
             admin_allimg:[],
             admin_nowuseimg:[],
-
             advertisement_allimg:[],
             advertisement_nowuseimg:[],
-
         }
     },
     created(){
@@ -119,7 +116,6 @@ export default {
                 console.log(error)
             })
         },
-
         getadminimg(){
             var _this = this;
             this.$axios({method: 'post',url: '/api/database/admin'})
@@ -144,7 +140,6 @@ export default {
                 console.log(error)
             })
         },
-
         getadvertisement(){
             var _this = this;
             this.$axios({method: 'post',url: '/api/database/advertisement'})
@@ -169,9 +164,6 @@ export default {
                 console.log(error)
             })
         },
-       
-
-
         // 清理空文件夹
         delnullfile(){
             var _this = this;

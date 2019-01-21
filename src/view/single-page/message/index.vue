@@ -10,18 +10,19 @@
             <span class="category-title">已读消息</span><Badge style="margin-left: 10px" class-name="gray-dadge" :count="messageReadedCount"></Badge>
           </MenuItem>
           <MenuItem name="trash">
-            <span class="category-title">回收站</span><Badge style="margin-left: 10px" class-name="gray-dadge" :count="messageTrashCount"></Badge>
+            <span class="category-title" > 
+              <Tooltip content="回收站中的消息会在3天后自动清理"  transfer placement="top-start">
+                  回收站
+              </Tooltip>
+            </span>
+            <Badge style="margin-left: 10px" class-name="gray-dadge" :count="messageTrashCount"></Badge>
           </MenuItem>
+            <Button @click="delmessage">点击清除超过 3 天的垃圾消息</Button>
         </Menu>
       </div>
       <div class="message-page-con message-list-con">
         <Spin fix v-if="listLoading" size="large"></Spin>
-        <Menu
-          width="auto"
-          active-name=""
-          :class="titleClass"
-          @on-select="handleView"
-        >
+        <Menu width="auto" active-name="" :class="titleClass" @on-select="handleView">
           <MenuItem v-for="item in messageList" :name="item.msg_id" :key="`msg_${item.msg_id}`">
             <div>
               <p class="msg-title">{{ item.title }}</p>
@@ -54,11 +55,7 @@
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-const listDic = {
-  unread: 'messageUnreadList',
-  readed: 'messageReadedList',
-  trash: 'messageTrashList'
-}
+const listDic = {unread: 'messageUnreadList',readed: 'messageReadedList',trash: 'messageTrashList'}
 export default {
   name: 'message_page',
   data () {
@@ -75,14 +72,8 @@ export default {
       messageUnreadList: state => state.user.messageUnreadList,
       messageReadedList: state => state.user.messageReadedList,
       messageTrashList: state => state.user.messageTrashList,
-      messageList () {
-        return this[listDic[this.currentMessageType]]
-      },
-      titleClass () {
-        return {
-          'not-unread-list': this.currentMessageType !== 'unread'
-        }
-      }
+      messageList () {return this[listDic[this.currentMessageType]]},
+      titleClass () { return {'not-unread-list': this.currentMessageType !== 'unread'}}
     }),
     ...mapGetters([
       'messageUnreadCount',
@@ -101,6 +92,16 @@ export default {
       'removeReaded',
       'restoreTrash'
     ]),
+    // 
+    delmessage(){
+      this.$axios({method: 'post',url: '/api/message/delmessage'})
+        .then(function(res){
+            var data = res.data;
+            console.log(res)
+        }).catch(function(error){
+            console.log(error)
+        })
+    },
     stopLoading (name) {
       this[name] = false
     },

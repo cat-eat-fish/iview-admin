@@ -1,13 +1,7 @@
 <template>
     <div>
         <!-- 添加管理员表单 -->
-        <Modal
-            v-model="addmodal"
-            title="添加管理员"
-            :footer-hide=true
-            :mask-closable=false
-            @on-ok="ok"
-            @on-cancel="cancel">
+        <Modal v-model="addmodal" title="添加管理员" :footer-hide=true :mask-closable=false  @on-cancel="cancel">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                 <FormItem label="用户名" prop="username">
                     <Input v-model="formValidate.username"  placeholder="请输入您的登录用户名"  />
@@ -47,11 +41,7 @@
             </Form>
         </Modal>
         <!-- 编辑管理员表单 -->
-        <Modal
-            v-model="editmodal"
-            title="编辑管理员"
-            @on-ok="editok"
-            @on-cancel="editcancel">
+        <Modal v-model="editmodal" title="编辑管理员" :footer-hide=true @on-ok="editok" @on-cancel="editcancel">
             <Form ref="editformValidate" :model="editformValidate" :rules="editruleValidate" :label-width="80">
                 <FormItem label="用户名" prop="username">
                     <Input v-model="editformValidate.username" placeholder="请输入您的登录用户名"  />
@@ -88,27 +78,30 @@
         </Modal>
         <!-- 管理员信息表格 -->
         <Card>
-            <p class="search-con search-con-top" >
-                <Button type="success" @click="addadmin"><Icon type="md-add" />添加管理员</Button>&nbsp;
-                <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>&nbsp;
-                <Select v-model="searchKey" class="search-col">
-                    <Option v-for="item in columns2"  v-if="item.key !== 'action'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
-                </Select>
-                <Input  clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
-                <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="search"/>搜索</Button>
-                <Button @click="resetSearch" class="search-btn" type="primary"><Icon type="search"/>重置</Button>
-                <Page :total="total" show-sizer style="mmargin-left:10px;" />
-            </p>
-            <Table width="100%" ref="tables" height="720"  :loading="loading" border :columns="columns2" :data="data"></Table>
-        <!-- <tables width="100%" ref="tables" height="720" :loading="loading" border :columns="columns2"  editable searchable search-place="top"   v-model="data"   @on-delete="handleDelete"/> -->
+            <div style="display:flex;line-height: 50px;">
+                <div class="search-con search-con-top"  >
+                    <Button type="success" @click="addadmin"><Icon type="md-add" />添加管理员</Button>&nbsp;
+                    <Button style="margin: 10px 0;" type="primary" @click="exportExcel">导出为Csv文件</Button>&nbsp;
+                    <Select v-model="searchKey" class="search-col">
+                        <Option v-for="item in columns2"  v-if="item.key !== 'action'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
+                    </Select>
+                    <Input  clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
+                    <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="search"/>搜索</Button>
+                    <Button @click="resetSearch" class="search-btn" type="primary"><Icon type="search"/>重置</Button>
+                </div>
+                <div>
+                    <Page :total="total" show-sizer style="mmargin-left:10px;" />
+                </div>
+            </div>
+            <Table width="100%" ref="tables"  :loading="loading" border :columns="columns2" :data="data"></Table>
         </Card>
         <!-- 文件上传 -->
         <Modal title="View Image" v-model="visible2">
-            <Upload
-                ref="upload"
-                name="inputFile"
-                :show-upload-list="false"
-                :on-progress="handleprogress"
+            <Upload 
+            ref="upload" 
+                name="inputFile" 
+                :show-upload-list="false" 
+                :on-progress="handleprogress" 
                 :on-success="handleSuccess"             
                 :on-error="handleErroe"
                 :format="['jpg','jpeg','png']"
@@ -135,11 +128,10 @@
 </template>
 
 <script>
-import Tables from '_c/tables'
-import addressJson from "@/api/address.json"        
+import addressJson from "@/api/address.json"
 import CountTo from '_c/count-to'
 export default {
-  components: {CountTo,Tables},
+  components: {CountTo},
   name: 'admin_page',
   data () {
         const validateCard = (rule, value, callback) => {
@@ -151,7 +143,7 @@ export default {
             }
         };
         const validatePhone = (rule, value, callback) => {
-            var pattphone = /^(13[0-9]|14[0-9]|15[0-9]|166|17[0-9]|18[0-9]|19[8|9])d{8}$/;
+            var pattphone =/^[1][3,4,5,7,8][0-9]{9}$/;// /^(13[0-9]|14[0-9]|15[0-9]|166|17[0-9]|18[0-9]|19[8|9])d{8}$/
             if(!pattphone.test(value)){
                 callback(new Error('手机号码格式错误'));
             }else{
@@ -192,12 +184,7 @@ export default {
         loadingStatus: false,       // 控制 文件加载上传中... 是否打开
         loading:true,               // 控制 管理员表格信息加载中... 是否打开  
         returnCitySN:{},            //地理信息
-        // 省市县三级联动数据
-        citydata: 
-        [
-            {value: '北京',label: '北京',children: [{value: '故宫',label: '故宫'},{value: '天坛',label: '天坛'},{value: '王府井',label: '王府井'}]}, 
-            {value: '江苏',label: '江苏',children: [{value: '南京',label: '南京',children: [{value: '夫子庙',label: '夫子庙',}]},{value: '苏州',label: '苏州',children: [{value: '拙政园',label: '拙政园',},{value: '狮子林',label: '狮子林',}]}],}
-        ],
+        citydata: [],               // 省市县三级联动数据
         // 添加管理员表单信息
         formValidate: {username:'', name: '',passwdCheck:"",phone:"",card:"", gender: '',city:[],desc: '',},
         // 编辑管理员表单信息
@@ -224,20 +211,20 @@ export default {
             {title: '姓名',key: 'name',width: 150,align: 'center',fixed: 'left'},
             {title: '密码',key: 'password',width: 160,align: 'center'},
             {title: '联系方式',key: 'phone',width: 160,align: 'center'},
-            {title: '头像',key: "thumb",width: 80,align: 'center',     
+            {title: '头像',key: "thumb",width: 80,align: 'center', 
                 render: (h,params) => {
                     var _this = this;
-                    return h('img', {
+                    return h('img',{
                         props: {type: 'primary',size: 'small'},
                         attrs: {src: params.row.thumb, style: 'width: 40px;height: 40px;border-radius: 2px;'},
-            　　　　　　 style: {marginRight: '5px'},
+                        style: {marginRight: '5px'},
                         on:{click(e){
                             _this.setuploaddatas (params.row.id);
                             _this.visible2=true;
                             var thumb = params.row.thumb.replace("http","https");
                             _this.defaultList= [{name:"",url : thumb}];
                         }}
-            　　　　});
+            　　　　 });
     　　　　     }
             },
             {title: '注册时间',key: 'date',width: 180,align: 'center',},
@@ -246,145 +233,99 @@ export default {
             {title: '身份证号',key: 'card',width: 180,align: 'center',},
             {title: '城市',key: 'address',width: 250,align: 'center',},
             {title: '操作',key: 'action',width: 200,options: ['delete'],align: 'center',fixed: 'right',
-                    render: (h, params) => {
-                            return h('div', [
-                                h('Button', {props: {type: 'primary',size: 'small'},style: {marginRight: '5px'},on: {click: () => {this.show(params.index)}}}, '查看'),
-                                h('Button', {
-                                    props: {type: 'success',size: 'small'},
-                                    style: {marginRight: '5px'},
-                                    on: {click: () => {
-                                            params.row.city = params.row.address.split("-");
-                                            this.editformValidate = params.row
-                                            this.editmodal = true;
-                                        }
-                                    }
-                                },"编辑"),
-                                h('Poptip', {props: { placement:"top",transfer:true, confirm:true,title:"你确定要删除该项吗？",},
-                                    on: {
-                                        click: () => {},
-                                        "on-ok":()=>{console.log(1)},
-                                        "on-cancel":()=>{console.log(0)}
-                                    }
-                                }, [h("Button",{props:{type: 'error',size: 'small',}},"删除")])
-                            ]);
-                        }
-                    
-                // render: (h, params) => {
-                //     return h('div', [
-                //         h('Button', {props: {type: 'primary',size: 'small'},style: {marginRight: '5px'},on: {click: () => {this.show(params.index)}}}, '查看'),
-                //         h('Button', {
-                //             props: {type: 'success',size: 'small'},
-                //             style: {marginRight: '5px'},
-                //             on: {click: () => {
-                //                     params.row.city = params.row.address.split("-");
-                //                     this.editformValidate = params.row
-                //                     this.editmodal = true;
-                //                 }
-                //             }
-                //         },"编辑"),
-                //         h('Poptip', {props: { placement:"bottom", confirm:true,title:"你确定要删除该项吗？",},
-                //             on: {
-                //                 click: () => {},
-                //                 "on-ok":()=>{console.log(1)},
-                //                 "on-cancel":()=>{console.log(0)}
-                //             }
-                //         }, [h("Button",{props:{type: 'error',size: 'small',}},"删除")])
-                //     ]);
-                // }
+                render: (h, params) => {
+                    var _this = this;
+                    return h('div', [
+                        h('Button', {props: {type: 'primary',size: 'small'},style: {marginRight: '5px'},on: {click: () => {this.show(params.index)}}}, '查看'),
+                        h('Button', {
+                            props: {type: 'success',size: 'small'},style: {marginRight: '5px'},
+                                on: {click: () => {
+                                    params.row.city = params.row.address.split("-");
+                                    this.editformValidate = params.row;
+                                    this.editformValidate.gender = params.row.gender === "男" ? "male" : params.row.gender === "女" ? "female" : "";
+                                    this.editformValidate.desc = params.row.mydesc;
+                                    this.editmodal = true;
+                                }
+                            }
+                        },"编辑"),
+                        h('Poptip', {props: { placement:"top",transfer:true, confirm:true,title:"你确定要删除该项吗？",},
+                            on: {click: () => {},"on-ok":()=>{_this.deladmin(params.row.id)},"on-cancel":()=>{console.log(0)}}
+                        }, [h("Button",{props:{type: 'error',size: 'small',}},"删除")])
+                    ]);
+                }
             },
         ],
     }
   },
-//   计算属性 
   computed:{
-      addressdata:function(){
-            var e = addressJson.citylist;
-            var city = {};
-            var p = [];
-            if(e.length !== 0){
-                e.map((item,index)=>{
-                    p[index]={};
-                    p[index].value = item.p;
-                    p[index].label = item.p;
-                    p[index].children = [];
-                    if(item.c){
-                        item.c.map((item2,index2)=>{
-                            p[index].children[index2] = {};
-                            p[index].children[index2].value = item2.n;
-                            p[index].children[index2].label = item2.n;
-                            p[index].children[index2].children = [];
-                            if(item2.a){
-                                item2.a.map((item3,index3)=>{
-                                    p[index].children[index2].children[index3] = {};
-                                    p[index].children[index2].children[index3].value = item3.s;
-                                    p[index].children[index2].children[index3].label = item3.s;
-                                })
-                            }
-                        })
-                    }
-                })
-            }
-          return p
-      }
+    addressdata:function(){
+        var e = addressJson.citylist;
+        var city = {};
+        var p = [];
+        if(e.length !== 0){
+            e.map((item,index)=>{
+                p[index]={};
+                p[index].value = item.p;
+                p[index].label = item.p;
+                p[index].children = [];
+                if(item.c){
+                    item.c.map((item2,index2)=>{
+                        p[index].children[index2] = {};
+                        p[index].children[index2].value = item2.n;
+                        p[index].children[index2].label = item2.n;
+                        p[index].children[index2].children = [];
+                        if(item2.a){
+                            item2.a.map((item3,index3)=>{
+                                p[index].children[index2].children[index3] = {};
+                                p[index].children[index2].children[index3].value = item3.s;
+                                p[index].children[index2].children[index3].label = item3.s;
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        return p
+    }
   },
   mounted(){
-    
-      this.setDefaultSearchKey();
-      // 获取地理信息
-    // var returnCitySN ;
-    //    let _this = this
-    //    var files = e.target.files[0]
-    //    if (!e || !window.FileReader) return  // 看支持不支持FileReader
-    //    let reader = new FileReader()
-    //    console.log(reader)
-    //    reader.readAsDataURL(files) // 这里是最关键的一步，转换就在这里
-    //    reader.onloadend = function () {
-    //      _this.src = this.result
-    //    }
-  },
-  created(){
-      
-      var head = document.getElementsByTagName('head')[0];
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src= "http://pv.sohu.com/cityjson?ie=utf-8";
-        head.appendChild(script);
-        var that = this;
-    setTimeout(function(){that.returnCitySN = returnCitySN;},5000)
-
-    this.citydata = this.addressdata;
     // 初始信息加载
     this.getAdminInfo();
+    this.setDefaultSearchKey();
+  },
+  created(){
+    // 获取地理信息
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src= "http://pv.sohu.com/cityjson?ie=utf-8";
+    head.appendChild(script);
+    var that = this;
+    setTimeout(function(){that.returnCitySN = returnCitySN;},5000)
+    this.citydata = this.addressdata;
   },
   methods: {
-    //   重置搜索内容
+    //  重置搜索内容
     resetSearch(){
         this.getAdminInfo();
         this.setDefaultSearchKey();
-        this.searchValue = "";
         this.$Message.success('重置成功');
     },
     setDefaultSearchKey () {
       this.searchKey = this.columns2[0].key !== 'action' ? this.columns2[0].key : (this.columns2.length > 1 ? this.columns2[1].key : '')
-    },
-    handleClear (e) {
-      if (e.target.value === '') this.insideTableData = this.data
-    },
-    handleDelete (params) {
-      console.log(params)
     },
     // 搜索
     handleSearch () {
       this.data = this.data.filter(item => item[this.searchKey].indexOf(this.searchValue) > -1)
       this.searchValue = "";
     },
-    //   导出表格
+    // 导出表格
     exportExcel () {
       this.$refs.tables.exportCsv({
         filename: `table-${(new Date()).valueOf()}.csv`
       })
     },
-    //   获取管理员信息
+    // 获取信息
     getAdminInfo(){
         var that = this;
         this.$axios({method: 'post',url: '/api/admin'})
@@ -401,14 +342,6 @@ export default {
             console.log(error)
         })
     },
-    //   判断数据类型
-    getType(obj) {
-        var type = typeof obj;
-        if (type !== 'object') {
-            return type;
-        }
-        return Object.prototype.toString.call(obj).replace(/^[object (S+)]$/, '$1');
-    },
     // 显示 单个管理员信息
     show (index) {
         this.$Modal.info({
@@ -424,11 +357,6 @@ export default {
     upload () {
         this.$refs.upload.post(this.file);
         this.loadingStatus = true;
-        var _this = this;
-        setTimeout(() => {
-            _this.file = null;
-            _this.loadingStatus = false;
-        }, 1500);
     },
     // 文件上传之前 
     handleBeforeUpload (file) {
@@ -442,20 +370,10 @@ export default {
     // 文件上传成功 重新获取数据  
     handleSuccess (res, file) {
         var that = this;
-        if(res.status === 200){
-            that.axios({method: 'post',url: '/api/admin'}).then(function(res){
-                var data = res.data;
-                data.map((item,index)=>{item.thumb = "http://localhost:3000"+(item.thumb.substr(8))})
-                that.data = data;
-                that.loading = false;
-                that.$Message.success(res.message)
-                that.visible2 = false;
-            }).catch(function(error){
-                console.log(error)
-                that.visible2 = false;
-                that.$Message.success("success")
-            })
-        }
+        this.getAdminInfo();
+        this.loadingStatus = false;
+        this.visible2 = false;
+
     },
     // 文件上传失败  -- 没效果
     handleErroe (error){
@@ -479,8 +397,6 @@ export default {
         this.$Message.info({content:"欢迎添加后台管理员，误操作会影响你的正常工作，且不会保存数据，请正常操作！",duration:2.5});
         this.addmodal = true;
     },
-    // 添加管理员 model 确定事件
-    ok () {this.$Message.info('Clicked ok');},
     // 添加管理员 model 取消事件
     cancel () {
         this.handleReset('formValidate');
@@ -494,25 +410,28 @@ export default {
                 // 整理后台
                 var nform = {};
                     nform.nusername = addform.username,                     //用户名
-                    nform.nname = addform.name ? addform.name : -1,         //姓名
+                    nform.nname = addform.name ? addform.name : '-1',         //姓名
                     nform.npassword = addform.passwd,                       //密码
                     nform.nphone = addform.phone,                           //手机号
-                    nform.ncard = addform.card ? addform.card : -1,         //身份证号
-                    nform.ncity = addform.city == "" ? this.returnCitySN.cname : [-1,-1,-1],     //地址
-                    nform.ngender = addform.gender ? addform.gender : -1,   //性别
-                    nform.ndesc = addform.desc ? addform.desc : -1,         //备注
+                    nform.ncard = addform.card ? addform.card : '-1',         //身份证号
+                    nform.ncity = addform.city == "" ? "-1" : addform.city.join('-'),     //地址
+                    nform.ngender = addform.gender === "male" ? "男" : addform.gender === "female" ? "女" : '-1',   //性别
+                    nform.ndesc = addform.desc ? addform.desc : '-1',         //备注
                     nform.nip = this.returnCitySN.cip,
                     nform.nregisteraddress = this.returnCitySN.cname;
                 // 传数据
                 var that = this;
-                that.axios({method: 'post',data:nform, url: '/api/myaddAdmin'})
+                this.$axios({method: 'post',data:nform, url: '/api/myaddAdmin'})
                 .then(function(res){
                     var data = res.data;
                     if(data.status === 201){
                         that.$Message.warning(data.message);
                         that.handleReset("formValidate");
-                    }else{
-                        that.getAdminInfo()
+                        that.addmodal = false;
+                    }else if(data.status === 200){
+                        that.$Message.success(data.message);
+                        that.getAdminInfo();
+                        that.addmodal = false;
                     }
                 }).catch(function(error){
                     console.log(error)
@@ -520,6 +439,20 @@ export default {
             } else {
                 this.$Message.error('Fail!');
             }
+        })
+    },
+    // 删除admin
+    deladmin(id){
+        var _this = this;
+        this.$axios({method: 'post',data:{id:id}, url: '/api/deladmin'})
+        .then(function(res){
+            var data = res.data;
+            if(data.status === 200){
+                _this.$Message.success(data.message);
+                _this.getAdminInfo();
+            }
+        }).catch(function(error){
+            console.log(error)
         })
     },
     // 重置 添加管理员表单
@@ -530,9 +463,32 @@ export default {
     editcancel(){console.log('editcancel')},
     // 编辑管理员 表单验证
     edithandleSubmit (name) {
+        var addform = this.editformValidate;
         this.$refs[name].validate((valid) => {
             if (valid) {
-                this.$Message.success('Success!');
+                var nform = {};
+                    nform.nid = Number(addform.id),
+                    nform.nusername = addform.username,                     //用户名
+                    nform.nname = addform.name ? addform.name : -1,         //姓名
+                    nform.npassword = addform.password,                       //密码
+                    nform.nphone = addform.phone,                           //手机号
+                    nform.ncard = addform.card ? addform.card : -1,         //身份证号
+                    nform.ncity = addform.city == "" ? "-1" : addform.city.join('-'),     //地址
+                    nform.ngender = addform.gender === "male" ? "男" : addform.gender === "female" ? "女" : '-1',   //性别
+                    nform.ndesc = addform.desc ? addform.desc : -1;         //备注
+                // 传数据
+                var that = this;
+                this.$axios({method: 'post',data:nform, url: '/api/editadmin'})
+                .then(function(res){
+                    var data = res.data;
+                    if(data.status === 200){
+                        that.$Message.success(data.message);
+                        that.getAdminInfo()
+                        that.editmodal = false;
+                    }
+                }).catch(function(error){
+                    console.log(error)
+                })
             } else {
                 this.$Message.error('Fail!');
             }
@@ -540,21 +496,18 @@ export default {
     },
     // 重置 编辑管理员表单
     edithandleReset (name) {this.$refs[name].resetFields();},
-
-    // post
-    mypost(){
-            this.$axios({method: 'post',url: '/api/post',data:{id:0}}).then(function(res){
-                console.log(res)
-                that.$Message.success(res.message);
-            }).catch(function(error){
-                console.log(error)
-            })
-    },
   }
 }
 </script>
 
-<style>
+<style lang="less" >
+    .search-con{
+        .search{
+            &-col{display: inline-block; width: 200px;}
+            &-input{display: inline-block;width: 200px;margin-left: 2px;}
+            &-btn{margin-left: 2px;}
+        }
+    }
     .demo-upload-list{display: inline-block;width: 60px;height: 60px;text-align: center;line-height: 60px;border: 1px solid transparent;border-radius: 4px;overflow: hidden;background: #fff;position: relative;box-shadow: 0 1px 1px rgba(0,0,0,.2);margin-right: 4px;}
     .demo-upload-list img{width: 100%;height: 100%;}
     .demo-upload-list-cover{display: none;position: absolute;top: 0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,.6);}
