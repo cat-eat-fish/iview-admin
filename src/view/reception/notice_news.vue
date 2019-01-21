@@ -401,7 +401,7 @@ export default {
                                 this.editformValidate.time = params.row.add_time.substr(11,21)
                                 this.editformValidate.id = params.row.id;
                                 this.editformValidate.add_time = params.row.date;
-                                this.editformValidate.status = 1;
+                                this.editformValidate.status = params.row.status === "草稿" ? 1 : params.row.status === "已发布" ? 3 : -1;
                                 this.editformValidate.thumb = params.row.thumb;
                                 this.editformValidate.sort = params.row.sort;
                                 this.editformValidate.title = params.row.title;
@@ -417,7 +417,7 @@ export default {
                             on: {
                                 click: () => {},
                                 "on-ok":()=>{_this.delnotice_news(params.row)},
-                                "on-cancel":()=>{console.log(0)}
+                                "on-cancel":()=>{}
                             }
                         }, [h("Button",{props:{type: 'error',size: 'small',}},"删除")])
                     ]);
