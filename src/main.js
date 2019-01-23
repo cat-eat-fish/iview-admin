@@ -12,9 +12,6 @@ import installPlugin from '@/plugin'
 import './index.less'
 import '@/assets/icons/iconfont.css'
 import TreeTable from 'tree-table-vue'
-import axios from 'axios'
-//把 `axios` 加到 `Vue` 的原型中
-Vue.prototype.$axios = axios;
 // 实际打包时应该不引入mock
 /* eslint-disable */
 if (process.env.NODE_ENV !== 'production') require('@/mock')

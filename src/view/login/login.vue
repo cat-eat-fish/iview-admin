@@ -8,7 +8,7 @@
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <login-form @on-success-valid="handleSubmit"></login-form>
-          <p class="login-tip">输入任意用户名和密码即可</p>
+          <p class="login-tip">如登录有误，请联系管理员</p>
         </div>
       </Card>
     </div>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import {login,getUserInfo} from '@/api/user'
 import LoginForm from '_c/login-form'
 import { mapActions } from 'vuex'
 export default {
@@ -24,19 +25,34 @@ export default {
   },
   methods: {
     ...mapActions([
-      'handleLogin',
+    //   'handleLogin',
       'getUserInfo'
     ]),
-    handleSubmit ({ userName, password }) {
-      this.handleLogin({ userName, password }).then(res => {
-        this.getUserInfo().then(res => {
-          this.$router.push({
-            name: this.$config.homeName
-          })
+    handleSubmit({userName,password}){
+        userName = userName.trim()
+        login({userName,password}).then(res => {
+          const data = res.data
+          if(data.status === 401){
+            this.$Message.error(data.message)
+          }else if(data.status === 402){
+            this.$Message.error(data.message)
+          }else{
+            this.$store.commit('setToken', data.token);
+            this.getUserInfo().then(res => {
+              this.$Message.success(data.message)
+              this.$router.push({
+                name: this.$config.homeName
+              })
+            })
+          }
+        }).catch(err => {
+          console.log(err)
         })
-      })
     }
   }
 }
 </script>
 
+<style>
+
+</style>

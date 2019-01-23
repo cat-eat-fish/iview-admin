@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import {text} from '@/api/user'
 import InforCard from '_c/info-card'
 import CountTo from '_c/count-to'
 import { ChartPie, ChartBar } from '_c/charts'
@@ -71,12 +70,14 @@ export default {
       }
     }
   },
-  mounted(){
-    
+  mounted () {
+    //
   }
 }
 </script>
 
 <style lang="less">
-.count-style{font-size: 50px;}
+.count-style{
+  font-size: 50px;
+}
 </style>

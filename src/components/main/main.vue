@@ -51,7 +51,16 @@ import maxLogo from '@/assets/images/logo.jpg'
 import './main.less'
 export default {
   name: 'Main',
-  components: {SideMenu,HeaderBar,Language,TagsNav,Fullscreen,ErrorStore,User,ABackTop},
+  components: {
+    SideMenu,
+    HeaderBar,
+    Language,
+    TagsNav,
+    Fullscreen,
+    ErrorStore,
+    User,
+    ABackTop
+  },
   data () {
     return {
       collapsed: false,

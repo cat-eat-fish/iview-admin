@@ -15,7 +15,9 @@ export default {
       type: String,
       default: ''
     },
-    /*绑定的值的类型, enum: ['html', 'text']*/
+    /**
+     * 绑定的值的类型, enum: ['html', 'text']
+     */
     valueType: {
       type: String,
       default: 'html',
@@ -23,12 +25,16 @@ export default {
         return oneOf(val, ['html', 'text'])
       }
     },
-    /* @description 设置change事件触发时间间隔*/
+    /**
+     * @description 设置change事件触发时间间隔
+     */
     changeInterval: {
       type: Number,
       default: 200
     },
-    /*@description 是否开启本地存储*/
+    /**
+     * @description 是否开启本地存储
+     */
     cache: {
       type: Boolean,
       default: true
@@ -95,6 +101,6 @@ export default {
 
 <style lang="less">
 .editor-wrapper *{
-  // z-index: 100 !important;
+  z-index: 100 !important;
 }
 </style>

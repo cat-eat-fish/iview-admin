@@ -11,9 +11,6 @@ export default {
       cacheChaildName: ''
     }
   },
-  created(){
-    
-  },
   computed: {
     notCacheName () {
       return (this.$route.meta && this.$route.meta.notCache) ? this.$route.name : ''

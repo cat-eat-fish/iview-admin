@@ -117,7 +117,68 @@ npm run build
 - [iView](https://github.com/iview/iview)
 - [Vue](https://github.com/vuejs/vue)
 - [Webpack](https://github.com/webpack/webpack)
-g)
+
+## 效果展示
+
+- 响应式布局首页
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/home.gif)
+
+- 标签导航
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/page-tags.gif)
+
+- 权限管理
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/access.gif)
+
+- 可拖拽列表
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/dragable-list.gif)
+
+- 图片预览编辑
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/image-editor.gif)
+
+- 文件上传
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/upload.gif)
+
+- 数字渐变
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/count-to.gif)
+
+- split-pane
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/split-pane.gif)
+
+- 文章发布
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/article-publish.gif)
+
+- 工作流
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/workflow.gif)
+
+- 可拖拽表格
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/dragable-table.gif)
+
+- 可编辑表格
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/editable-table.gif)
+
+- 表格导出数据
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/exportable-table.gif)
+
+- 表格转图片
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/table2image.gif)
+
+- 错误页面
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/error-page.gif)
+
+- 锁屏
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/locking.gif)
+
+- 可收缩侧边栏
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/sidebarmenu.gif)
+
+- 主题切换
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/theme.gif)
+
+- 消息中心
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/message.gif)
+
+### 💖💖 If you find this project helpful, maybe you can buy me a coffee. 💖💖
+![image](https://github.com/iview/iview-admin/raw/dev/github-gif/code.png)
 
 
 ## License

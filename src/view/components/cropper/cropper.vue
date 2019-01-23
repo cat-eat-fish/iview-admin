@@ -18,7 +18,6 @@
 
 <script>
 import Cropper from '@/components/cropper'
-import { uploadImg } from '@/api/data'
 export default {
   name: 'cropper_page',
   components: {
@@ -33,9 +32,6 @@ export default {
     handleCroped (blob) {
       const formData = new FormData()
       formData.append('croppedImg', blob)
-      uploadImg(formData).then(() => {
-        this.$Message.success('Upload success~')
-      })
     }
   }
 }

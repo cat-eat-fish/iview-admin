@@ -6,7 +6,6 @@
       </Badge>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">
-        <DropdownItem @click="goadmin">我的</DropdownItem>
         <DropdownItem name="message">
           消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
         </DropdownItem>
@@ -45,11 +44,6 @@ export default {
     message () {
       this.$router.push({
         name: 'message_page'
-      })
-    },
-    goadmin(){
-      this.$router.push({
-        name: 'admin_management'
       })
     },
     handleClick (name) {
