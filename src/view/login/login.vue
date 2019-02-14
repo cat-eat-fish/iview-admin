@@ -30,6 +30,7 @@ export default {
     ]),
     handleSubmit({userName,password}){
         userName = userName.trim()
+        // var token = this.$store.state.user.token === false ? '' : this.$store.state.user.token;
         login({userName,password}).then(res => {
           const data = res.data
           if(data.status === 401){
@@ -38,7 +39,8 @@ export default {
             this.$Message.error(data.message)
           }else{
             this.$store.commit('setToken', data.token);
-            this.getUserInfo().then(res => {
+            this.$store.commit('setUser', userName);
+            this.getUserInfo(this.$store.state.user.token,this.$store.state.user.user).then(res => {
               this.$Message.success(data.message)
               this.$router.push({
                 name: this.$config.homeName

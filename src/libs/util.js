@@ -10,6 +10,16 @@ export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, {expires: cookieExpires || 1})
 }
 
+export const setUser = (myuser) => {
+  Cookies.set('user', myuser, {expires: cookieExpires || 1})
+}
+
+export const getUser = () => {
+  const myuser = Cookies.get('user')
+  if (myuser) return myuser
+  else return false
+}
+
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token

@@ -9,12 +9,13 @@ import {
   restoreTrash,
   getUnreadCount
 } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, getToken ,setUser ,getUser} from '@/libs/util'
 
 export default {
   state: {
     userName: '',
     userId: '',
+    user:getUser(),
     avatorImgPath: '',
     token: getToken(),
     access: '',
@@ -41,6 +42,14 @@ export default {
     setToken (state, token) {
       state.token = token
       setToken(token)
+    },
+    setToken (state, token) {
+      state.token = token
+      setToken(token)
+    },
+    setUser (state, user) {
+      state.user = user
+      setUser(user)
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
@@ -91,6 +100,7 @@ export default {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('setToken', '')
+          commit('setUser', '')
           commit('setAccess', [])
           resolve()
         }).catch(err => {
@@ -106,7 +116,7 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          getUserInfo(state.token).then(res => {
+          getUserInfo(state.token,state.user).then(res => {
             const data = res.data.data;
             commit('setAvator', data.avator)
             commit('setUserName', data.name)

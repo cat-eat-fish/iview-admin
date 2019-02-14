@@ -49,4 +49,35 @@ export const database_delnullfile = () => {
     })
 }
 
+export const admin = () => {
+  return axios.request({
+    url: '/api/admin',
+    method: 'post'
+  })
+}
+
+export const delAdmin = (id) => {
+  return axios.request({
+    url: '/api/deladmin',
+    data:{id},
+    method: 'post'
+  })
+}
+
+export const addAdmin = (form) => {
+  return axios.request({
+    url: '/api/myaddAdmin',
+    data:{form},
+    method: 'post'
+  })
+}
+
+export const editAdmin = (form) => {
+  console.log(1)
+  return axios.request({
+    url: '/api/editadmin',
+    data:{form},
+    method: 'post'
+  })
+}
 

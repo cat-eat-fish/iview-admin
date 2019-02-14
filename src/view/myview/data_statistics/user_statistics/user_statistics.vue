@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import {checkUser} from '@/api/user'
+import {getUser,getToken} from '@/libs/util'
 import echarts from 'echarts'
 import { on, off } from '@/libs/tools'
 export default {
@@ -23,6 +25,11 @@ export default {
     }
   },
   mounted () {
+    checkUser(getToken()).then(res=>{
+      var data = res.data
+    }).catch(err=>{
+      console.log(err)
+    })
     var dataCount = 900;
     var data = generateData(dataCount);
     var option = {
